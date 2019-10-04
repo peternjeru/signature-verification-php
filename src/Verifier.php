@@ -7,7 +7,7 @@ class Verifier
 {
 	function verify($callbackRequest)
 	{
-		//use if conversion to json object throws the error "Control character error, possibly incorrectly encoded"
+		//use next line if conversion to json object returns null and json_last_error_msg() returns the error "Control character error, possibly incorrectly encoded"
 		$callbackRequest = preg_replace('/[[:cntrl:]]/', '', $callbackRequest);
 
 		$jsonObj = json_decode($callbackRequest, true);
