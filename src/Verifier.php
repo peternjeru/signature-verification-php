@@ -18,7 +18,8 @@ class Verifier
 		var_dump($rsaPk);
 		echo "</pre>";
 
-		$data = $jsonObj["TransactionID"]
+		$data = $jsonObj["TransactionTime"]
+			.$jsonObj["TransactionID"]
 			.$jsonObj["TransactionAmount"]
 			.$jsonObj["AccountReference"]
 			.$jsonObj["SenderMSISDN"]
