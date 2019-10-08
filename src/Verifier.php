@@ -6,30 +6,19 @@ use \phpseclib\Crypt\RSA;
 
 class Verifier
 {
-	function verify($callbackRequest)
+	function verify($keyString, $data, $signature)
 	{
-		//use next line if conversion to json object returns null and json_last_error_msg() returns the error "Control character error, possibly incorrectly encoded"
-		$callbackRequest = preg_replace('/[[:cntrl:]]/', '', $callbackRequest);
-
-		$jsonObj = json_decode($callbackRequest, true);
-		$data = $jsonObj["TransactionTime"]
-			.$jsonObj["TransactionID"]
-			.$jsonObj["TransactionAmount"]
-			.$jsonObj["AccountReference"]
-			.$jsonObj["SenderMSISDN"]
-			.$jsonObj["BusinessShortcode"];
-
 		$rsa = new RSA();
-		$rsa->loadKey($jsonObj["PublicKey"]);
+		$rsa->loadKey($keyString);
 		$rsa->setSignatureMode(RSA::SIGNATURE_PKCS1);
-		$signatureBinary = base64_decode($jsonObj["Signature"]);
+		$signatureBase64 = base64_decode($signature);
 
-		if($signatureBinary === FALSE)
+		if($signatureBase64 === FALSE)
 		{
 			throw new Exception("Invalid Signature");
 		}
 
-		$verified = $rsa->verify($data, $signatureBinary);
+		$verified = $rsa->verify($data, $signatureBase64);
 		return $verified;
 	}
 }
