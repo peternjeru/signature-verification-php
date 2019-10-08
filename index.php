@@ -19,4 +19,5 @@ $callbackRequest = "{\"TransactionType\":\"CustomerPayBillConfirmation\",
 \"PublicKey\":\"-----BEGIN RSA PUBLIC KEY-----\r\nMIGJAoGBAJ6bBYcQrVNJH+dFvA1nkRXcuGrJLqKKuF7IscD6dvymi3xQht\/bPC\/z\r\nSXnu0RLQwvymyRsqgAs4+jDgZH5NRNIx8qg\/8K\/thNc+XJzssmt8gFddWR4V++Sf\r\nu8x8GPNtkJyGSywp4Y4yukt\/CN7b2aop68bnhrZd8f\/s8VJqR7EvAgMBAAE=\r\n-----END RSA PUBLIC KEY-----\"}";
 
 $dec = new Verifier();
-$dec->verify($callbackRequest);
+$verified = $dec->verify($callbackRequest);
+echo "Verified: ".($verified == true ? "True" : "False");

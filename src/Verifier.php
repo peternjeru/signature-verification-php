@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use Exception;
 use \phpseclib\Crypt\RSA;
 
 class Verifier
@@ -11,13 +12,6 @@ class Verifier
 		$callbackRequest = preg_replace('/[[:cntrl:]]/', '', $callbackRequest);
 
 		$jsonObj = json_decode($callbackRequest, true);
-		$rsaPk = $jsonObj["PublicKey"];
-
-		//see how it looks like in PHP
-		echo "<pre>";
-		var_dump($rsaPk);
-		echo "</pre>";
-
 		$data = $jsonObj["TransactionTime"]
 			.$jsonObj["TransactionID"]
 			.$jsonObj["TransactionAmount"]
@@ -25,21 +19,17 @@ class Verifier
 			.$jsonObj["SenderMSISDN"]
 			.$jsonObj["BusinessShortcode"];
 
-		$signature = $jsonObj["Signature"];
-
 		$rsa = new RSA();
-		$rsa->loadKey($rsaPk);
+		$rsa->loadKey($jsonObj["PublicKey"]);
 		$rsa->setSignatureMode(RSA::SIGNATURE_PKCS1);
-		$signatureBinary = base64_decode($signature);
+		$signatureBinary = base64_decode($jsonObj["Signature"]);
 
 		if($signatureBinary === FALSE)
 		{
-			throw new \Exception("Invalid Signature");
+			throw new Exception("Invalid Signature");
 		}
 
 		$verified = $rsa->verify($data, $signatureBinary);
-
-		echo "Verified: ".($verified == true ? "True" : "False");
 		return $verified;
 	}
 }
