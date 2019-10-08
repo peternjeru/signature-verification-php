@@ -30,7 +30,14 @@ class Verifier
 		$rsa = new RSA();
 		$rsa->loadKey($rsaPk);
 		$rsa->setSignatureMode(RSA::SIGNATURE_PKCS1);
-		$verified = $rsa->verify($data, hex2bin($signature));
+		$signatureBinary = base64_decode($signature);
+
+		if($signatureBinary === FALSE)
+		{
+			throw new \Exception("Invalid Signature");
+		}
+
+		$verified = $rsa->verify($data, $signatureBinary);
 
 		echo "Verified: ".($verified == true ? "True" : "False");
 		return $verified;
